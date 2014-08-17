@@ -7,6 +7,8 @@
 struct benchmark_results
 {
 	std::chrono::duration<std::chrono::high_resolution_clock::rep, std::chrono::high_resolution_clock::period> time_taken;
+	bool test_sorted;
+	bool test_integrity;
 };
 
 std::chrono::high_resolution_clock::time_point get_time_point();

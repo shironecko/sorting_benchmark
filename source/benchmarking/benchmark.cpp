@@ -3,6 +3,7 @@
 #include "benchmark.h"
 #include "options.h"
 #include "sorting.h"
+#include "test.h"
 
 namespace chrono = std::chrono;
 
@@ -27,11 +28,25 @@ void benchmark_wrap(const options& opt, benchmark_results& result, void(*benchma
 	int *arr = new int[opt.array_size];
 	random_fill(arr, opt.array_size, opt.arr_min_num, opt.arr_max_num);
 
+	int *backup = nullptr;
+	if (opt.test)
+	{
+		backup = new int[opt.array_size];
+		for (unsigned int i = 0; i < opt.array_size; i++)
+			backup[i] = arr[i];
+	}
+
 	auto start = chrono::high_resolution_clock::now();
 	benchmark(arr, opt.array_size, opt, result);
 	auto end = chrono::high_resolution_clock::now();
 
 	result.time_taken = end - start;
+	if (opt.test)
+	{
+		result.test_sorted = sort_test(arr, opt.array_size);
+		result.test_integrity = integrity_test(backup, arr, opt.array_size);
+	}
+
 	delete[] arr;
 }
 
