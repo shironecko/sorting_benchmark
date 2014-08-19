@@ -27,7 +27,7 @@ int main(int argc, char* argv[])
 		("min", opt::value<int>(&g_options.arr_min_num)->default_value(0), "minimum value of digits in array")
 		("max", opt::value<int>(&g_options.arr_max_num)->default_value(100), "maximum value of digits in array")
 		("test,t", opt::value<bool>(&g_options.test)->implicit_value(true)->default_value(false), "enables testing of sorted arrays for order and integrity")
-		("no-echo,n", opt::value<bool>(&g_options.no_echo)->implicit_value(true)->default_value(false), "disables most of the output")
+		("verbosity,v", opt::value<int>(&g_options.verbosity_level)->default_value(2), "amount of info printed")
 		("help,h", "outputs some help info");
 
 	opt::variables_map var_map;
@@ -53,12 +53,22 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
+	cout << "Algorithm : " << g_options.algorithm << endl << endl;
+
 	benchmark_results result;
-	benchmark_wrap(g_options, result, benchmark);
+	std::chrono::duration<std::chrono::high_resolution_clock::rep, std::chrono::high_resolution_clock::period> total_time{};
+	for (unsigned int i = 0; i < g_options.iterations; i++)
+	{
+		benchmark_wrap(g_options, result, benchmark);
+		total_time += result.time_taken;
 
-	cout << "Time taken: " << chrono::duration_cast<chrono::seconds>(result.time_taken).count() << ":"
-		<< chrono::duration_cast<chrono::milliseconds>(result.time_taken).count() % 1000 << endl;
+		if (g_options.verbosity_level >= 1)
+			cout << "Time taken: ";
 
-	chrono::milliseconds duration(10000);
-	std::this_thread::sleep_for(duration);
+		cout << chrono::duration_cast<chrono::seconds>(total_time).count() << ":"
+			<< chrono::duration_cast<chrono::milliseconds>(total_time).count() % 1000 << endl << endl;
+	}
+
+	cout << "Time taken: " << chrono::duration_cast<chrono::seconds>(total_time).count() << ":"
+		<< chrono::duration_cast<chrono::milliseconds>(total_time).count() % 1000 << endl;
 }
