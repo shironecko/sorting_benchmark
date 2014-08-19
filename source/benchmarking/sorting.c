@@ -34,7 +34,7 @@ void insertion_sort(int *arr, unsigned int len)
 		int current = arr[i];
 
 		unsigned int j = i - 1;
-		for ( ; j >= 1; j--)
+		for ( ; j >= 0; j--)
 		{
 			if (arr[j] > current)
 				arr[j + 1] = arr[j];
