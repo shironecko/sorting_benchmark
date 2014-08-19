@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include "sorting.h"
 
 void swap(int* arr, int a, int b)

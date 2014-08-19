@@ -91,7 +91,7 @@
   <ItemGroup>
     <ClCompile Include="..\source\benchmarking\benchmark.cpp" />
     <ClCompile Include="..\source\benchmarking\main.cpp" />
-    <ClCompile Include="..\source\benchmarking\sorting.cpp" />
+    <ClCompile Include="..\source\benchmarking\sorting.c" />
     <ClCompile Include="..\source\benchmarking\test.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

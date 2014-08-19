@@ -3,7 +3,10 @@
 #include <random>
 #include "benchmark.h"
 #include "options.h"
+extern "C"
+{
 #include "sorting.h"
+}
 #include "test.h"
 
 namespace chrono = std::chrono;
