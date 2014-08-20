@@ -14,6 +14,6 @@ Benchmarking sorting algorithms just for fun.
 * [x] Bubble
 * [x] Insertion
 * [ ] Selection
-* [ ] Merging
+* [x] Merging
 * [ ] Counting
 * [ ] Radix
