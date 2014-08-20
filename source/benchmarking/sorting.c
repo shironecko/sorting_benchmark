@@ -1,5 +1,4 @@
 #include <stdbool.h>
-#include <stdlib.h>
 #include "sorting.h"
 
 void swap(int* arr, int a, int b)
@@ -47,8 +46,18 @@ void insertion_sort(int *arr, unsigned int len)
 	}
 }
 
+/*
+ * Sorts an array using recursive merge sort with no additional memory allocations
+ * up - pointer to array to sort
+ * down - pointer to an empty array with the same size as 'up', used as buffer
+ * left - pass 0 to sort an array from the very begining
+ * right - pass the length of the 'up' - 1 to sort the whole array
+ * returns: pointer to the sorted array, this will be equal to either 'up' or 'down'
+ * Note: take notice that sorted version of the array may end up either in 'up' or 'down'
+ */
 int* merge_sort(int *up, int *down, unsigned int left, unsigned int right)
 {
+
 	if (left == right)
 	{
 		down[left] = up[left];
@@ -57,6 +66,7 @@ int* merge_sort(int *up, int *down, unsigned int left, unsigned int right)
 
 	unsigned int middle = (unsigned int)((left + right) * 0.5f);
 
+	// divide and sort
 	int *l_buff = merge_sort(up, down, left, middle);
 	int *r_buff = merge_sort(up, down, middle + 1, right);
 
