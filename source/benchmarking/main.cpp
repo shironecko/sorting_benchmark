@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <chrono>
 #include <thread>
 #include <string>
@@ -13,8 +14,11 @@ namespace chrono = std::chrono;
 using std::cout;
 using std::cerr;
 using std::endl;
+using std::setw;
 
 options g_options;
+
+void print_time(std::chrono::duration<std::chrono::high_resolution_clock::rep, std::chrono::high_resolution_clock::period> time);
 
 int main(int argc, char* argv[])
 {
@@ -44,6 +48,7 @@ int main(int argc, char* argv[])
 	std::map<std::string, void(*)(int *arr, unsigned int len, const options& opt, benchmark_results& result)> benchmark_map;
 	benchmark_map["bubble"] = bubble_benchmark;
 	benchmark_map["insertion"] = insertion_benchmark;
+	benchmark_map["merge"] = merge_benchmark;
 
 	// runing benchmark
 	auto benchmark = benchmark_map[g_options.algorithm];
@@ -56,19 +61,48 @@ int main(int argc, char* argv[])
 	cout << "Algorithm : " << g_options.algorithm << endl << endl;
 
 	benchmark_results result;
-	std::chrono::duration<std::chrono::high_resolution_clock::rep, std::chrono::high_resolution_clock::period> total_time{};
+	std::chrono::duration<std::chrono::high_resolution_clock::rep, std::chrono::high_resolution_clock::period> total_time, min_time, max_time;
+	unsigned int integrity = 0, sorted = 0;
+
 	for (unsigned int i = 0; i < g_options.iterations; i++)
 	{
 		benchmark_wrap(g_options, result, benchmark);
 		total_time += result.time_taken;
+		if (result.test_integrity) integrity++;
+		if (result.test_sorted) sorted++;
+
+		if (result.time_taken < min_time || min_time == min_time.zero())
+			min_time = result.time_taken;
+		if (result.time_taken > max_time)
+			max_time = result.time_taken;
 
 		if (g_options.verbosity_level >= 1)
 			cout << "Time taken: ";
 
-		cout << chrono::duration_cast<chrono::seconds>(total_time).count() << ":"
-			<< chrono::duration_cast<chrono::milliseconds>(total_time).count() % 1000 << endl << endl;
+		if (g_options.verbosity_level >= 0)
+			cout << chrono::duration_cast<chrono::seconds>(total_time).count() << ":"
+				<< chrono::duration_cast<chrono::milliseconds>(total_time).count() % 1000 << endl << endl;
 	}
 
-	cout << "Time taken: " << chrono::duration_cast<chrono::seconds>(total_time).count() << ":"
-		<< chrono::duration_cast<chrono::milliseconds>(total_time).count() % 1000 << endl;
+	if (g_options.test)
+	{
+		cout << "Integrity : " << setw(number_width(g_options.iterations)) << integrity << "/" << g_options.iterations << endl;
+		cout << "Sorted    : " << setw(number_width(g_options.iterations)) << sorted << "/" << g_options.iterations << endl;
+	}
+
+	cout << "Min time     : ";
+	print_time(min_time);
+	cout << "Max time     : ";
+	print_time(max_time);
+	cout << "Average time : ";
+	print_time(total_time / g_options.iterations);
+	cout << "Total time   : ";
+	print_time(total_time);
+}
+
+void print_time(std::chrono::duration<std::chrono::high_resolution_clock::rep, std::chrono::high_resolution_clock::period> time)
+{
+	cout << setw(3) << chrono::duration_cast<chrono::seconds>(time).count() << ":"
+		<< setw(3) << chrono::duration_cast<chrono::milliseconds>(time).count() % 1000 << ":"
+		<< setw(3) << chrono::duration_cast<chrono::microseconds>(time).count() % 1000 << endl;
 }

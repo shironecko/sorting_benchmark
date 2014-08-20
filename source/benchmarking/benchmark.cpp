@@ -3,11 +3,12 @@
 #include <random>
 #include "benchmark.h"
 #include "options.h"
+#include "test.h"
+
 extern "C"
 {
-#include "sorting.h"
+	#include "sorting.h"
 }
-#include "test.h"
 
 namespace chrono = std::chrono;
 using std::cout;
@@ -43,13 +44,14 @@ int number_width(int number)
 
 void print_array(int *arr, unsigned int len, int number_width)
 {
-	cout << "{ ";
+	cout << "{";
 
-	auto old_width = cout.width(number_width);
 	for (unsigned int i = 0; i < len; i++)
+	{
+		cout.width(number_width);
 		cout << arr[i];
+	}
 
-	cout.width(old_width);
 	cout << " }";
 }
 
@@ -92,6 +94,7 @@ void benchmark_wrap(const options& opt, benchmark_results& result, void(*benchma
 	}
 
 	delete[] arr;
+	delete[] backup;
 }
 
 void bubble_benchmark(int *arr, unsigned int len, const options& opt, benchmark_results& result)
@@ -102,4 +105,9 @@ void bubble_benchmark(int *arr, unsigned int len, const options& opt, benchmark_
 void insertion_benchmark(int *arr, unsigned int len, const options& opt, benchmark_results& result)
 {
 	insertion_sort(arr, len);
+}
+
+void merge_benchmark(int *arr, unsigned int len, const options& opt, benchmark_results& result)
+{
+	merge_sort(arr, 0, len - 1, len);
 }
