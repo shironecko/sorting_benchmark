@@ -109,5 +109,13 @@ void insertion_benchmark(int *arr, unsigned int len, const options& opt, benchma
 
 void merge_benchmark(int *arr, unsigned int len, const options& opt, benchmark_results& result)
 {
-	merge_sort(arr, 0, len - 1, len);
+	int* buff = new int[len];
+
+	if (merge_sort(arr, buff, 0, len -1) != arr)
+	{
+		for (unsigned int i = 0; i < len; i++)
+			arr[i] = buff[i];
+	}
+
+	delete[] buff;
 }

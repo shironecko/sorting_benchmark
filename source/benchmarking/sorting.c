@@ -47,60 +47,49 @@ void insertion_sort(int *arr, unsigned int len)
 	}
 }
 
-/*void merge_sort(int *arr, int *buff, int start, int end)
+int* merge_sort(int *up, int *down, unsigned int left, unsigned int right)
 {
-	int width = end - start;
-
-	if (width == 0)
-	{
-		buff[start] = arr[start];
-		return;
-	}
-
-	int middle = start + (start - end) * 0.5f;
-	merge_sort(arr, buff, start, middle);
-	merge_sort(arr, buff, middle + 1, end);
-
-
-}*/
-
-void make_merge(int *arr, int left, int mid, int right, int len)
-{ 
-	int *tmp = malloc(sizeof(int) * len);
-
-	int count = 0; 
-	int i = left;
-	int j = mid + 1; 
-
-	for (int step = 0; step < right - left + 1; step++)
-	{ 
-		if ((j > right) || ((i <= mid) && (arr[i] < arr[j])))
-		{ 
-			count += j - (mid + 1); 
-			tmp[step] = arr[i]; i++; 
-		} 
-		else 
-		{ 
-			tmp[step] = arr[j]; 
-			j++; 
-		} 
-	} 
-	for (int step = 0; step < right - left + 1; ++step)
-	{ 
-		arr[left + step] = tmp[step]; 
-	}
-
-	free(tmp);
-} 
-
-void merge_sort(int *arr, int left, int right, int len)
-{ 
 	if (left == right)
-		return;
+	{
+		down[left] = up[left];
+		return down;
+	}
 
-	int mid = (left + right) / 2;
+	unsigned int middle = (unsigned int)((left + right) * 0.5f);
 
-	merge_sort(arr, left, mid, len);
-	merge_sort(arr, mid + 1, right, len);
-	make_merge(arr, left, mid, right, len);
+	int *l_buff = merge_sort(up, down, left, middle);
+	int *r_buff = merge_sort(up, down, middle + 1, right);
+
+	// merge
+	int *target = l_buff == up ? down : up;
+
+	unsigned int width = right - left, l_cur = left, r_cur = middle + 1;
+	for (unsigned int i = left; i <= right; i++)
+	{
+		if (l_cur <= middle && r_cur <= right)
+		{
+			if (l_buff[l_cur] < r_buff[r_cur])
+			{
+				target[i] = l_buff[l_cur];
+				l_cur++;
+			}
+			else
+			{
+				target[i] = r_buff[r_cur];
+				r_cur++;
+			}
+		}
+		else if (l_cur <= middle)
+		{
+			target[i] = l_buff[l_cur];
+			l_cur++;
+		}
+		else
+		{
+			target[i] = r_buff[r_cur];
+			r_cur++;
+		}
+	}
+
+	return target;
 }
