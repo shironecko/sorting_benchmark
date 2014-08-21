@@ -28,6 +28,7 @@ int main(int argc, char* argv[])
 	std::map<std::string, void(*)(pipeline_data& data)> benchmark_map;
 	benchmark_map["bubble"] = benchmark_bubble;
 	benchmark_map["insertion"] = benchmark_insertion;
+	benchmark_map["selection"] = benchmark_selection;
 	benchmark_map["merge"] = benchmark_merge;
 
 	// checking if the user specified a valid algorithm for benchmarking

@@ -27,6 +27,15 @@ void benchmark_insertion(pipeline_data& data)
 	data.time_taken = now() - start;
 }
 
+void benchmark_selection(pipeline_data& data)
+{
+	time_point start = now();
+
+	selection_sort(data.sorted_array, data.array_size);
+
+	data.time_taken = now() - start;
+}
+
 void benchmark_merge(pipeline_data& data)
 {
 	time_point start = now();
