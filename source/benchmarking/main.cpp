@@ -1,110 +1,100 @@
 #include <iostream>
 #include <iomanip>
-#include <chrono>
 #include <thread>
 #include <string>
 #include <map>
+#include <vector>
 #include <boost/program_options.hpp>
 
-#include "options.h"
-#include "benchmark.h"
 #include "time_helper.h"
+#include "options.h"
+#include "pipeline_data.h"
+#include "array_prepare.h"
+#include "benchmark.h"
+#include "statistics.h"
+#include "test.h"
+#include "output.h"
 
-namespace opt = boost::program_options;
-namespace chrono = std::chrono;
-namespace th = time_helper;
-using std::cout;
-using std::cerr;
-using std::endl;
-using std::setw;
+using namespace std;
+using namespace time_helper;
+namespace output = benchmark_output;
 
-options g_options;
-
-void print_time(std::chrono::duration<std::chrono::high_resolution_clock::rep, std::chrono::high_resolution_clock::period> time);
 
 int main(int argc, char* argv[])
 {
-	// command-line arguments
-	opt::options_description opt_desc("Allowed options");
-	opt_desc.add_options()
-		("algorithm,a", opt::value<std::string>(&g_options.algorithm)->default_value("bubble"), "algorithm used for benchmarking")
-		("iterations,i", opt::value<unsigned int>(&g_options.iterations)->default_value(1000), "number of iterations taken")
-		("array-size,s", opt::value<unsigned int>(&g_options.array_size)->default_value(10000), "size of the test array")
-		("min", opt::value<int>(&g_options.arr_min_num)->default_value(0), "minimum value of digits in array")
-		("max", opt::value<int>(&g_options.arr_max_num)->default_value(100), "maximum value of digits in array")
-		("test,t", opt::value<bool>(&g_options.test)->implicit_value(true)->default_value(false), "enables testing of sorted arrays for order and integrity")
-		("verbosity,v", opt::value<int>(&g_options.verbosity_level)->default_value(2), "amount of info printed")
-		("help,h", "outputs some help info");
-
-	opt::variables_map var_map;
-	opt::store(opt::parse_command_line(argc, argv, opt_desc), var_map);
-	opt::notify(var_map);
-
-	if (var_map.count("help") > 0)
-	{
-		cout << opt_desc << endl;
-		return 0;
-	}
+	options opts = initialize_options(argc, argv);
 
 	// benchmark map
-	std::map<std::string, void(*)(int *arr, unsigned int len, const options& opt, benchmark_results& result)> benchmark_map;
-	benchmark_map["bubble"] = bubble_benchmark;
-	benchmark_map["insertion"] = insertion_benchmark;
-	benchmark_map["merge"] = merge_benchmark;
+	std::map<std::string, void(*)(pipeline_data& data)> benchmark_map;
+	benchmark_map["bubble"] = benchmark_bubble;
+	benchmark_map["insertion"] = benchmark_insertion;
+	benchmark_map["merge"] = benchmark_merge;
 
-	// runing benchmark
-	auto benchmark = benchmark_map[g_options.algorithm];
+	// checking if the user specified a valid algorithm for benchmarking
+	auto benchmark = benchmark_map[opts.algorithm];
 	if (benchmark == nullptr)
 	{
-		cerr << "No such algorithm: " << g_options.algorithm << endl;
+		cerr << "No such algorithm: " << opts.algorithm << endl;
 		return 1;
 	}
 
-	cout << "Algorithm : " << g_options.algorithm << endl << endl;
+	// prepairing pipeline
+	vector<void(*)(pipeline_data& data)> pipeline;
+	pipeline.push_back(prepare_array);
+	pipeline.push_back(benchmark);
+	pipeline.push_back(aggregate_statistics);
 
-	benchmark_results result;
-	std::chrono::duration<std::chrono::high_resolution_clock::rep, std::chrono::high_resolution_clock::period> total_time, min_time, max_time;
+	if (opts.test)
+		pipeline.push_back(test);
+
+	// printing greeting according to output mode and adding appropriate output method to the pipeline
+	if (opts.output == "hs")
+	{
+		pipeline.push_back(output::human_sparse);
+		output::human_sparse_greetings(opts);
+	}
+	else if (opts.output == "hv")
+	{
+		pipeline.push_back(output::human_verbose);
+		output::human_verbose_greetings(opts);
+	}
+	else if (opts.output == "m")
+		pipeline.push_back(output::machine);
+	else
+	{
+		cout << "Unknown output mode: " << opts.output << endl;
+		exit(2);
+	}
+
+	// prepairing pipeline data
+	pipeline_data data{};
+	data.array_size = opts.array_size;
+	data.unsorted_array = new int[data.array_size];
+	data.sorted_array = new int[data.array_size];
+	data.iterations = opts.iterations;
+	data.min_number = opts.arr_min_num;
+	data.max_number = opts.arr_max_num;
+	data.test = opts.test;
+
+	// misc testing statistical vars
 	unsigned int integrity = 0, sorted = 0;
 
-	for (unsigned int i = 0; i < g_options.iterations; i++)
+	// the pipeline itself
+	for (unsigned int i = 0; i < opts.iterations; i++)
 	{
-		benchmark_wrap(g_options, result, benchmark);
-		total_time += result.time_taken;
-		if (result.test_integrity) integrity++;
-		if (result.test_sorted) sorted++;
+		data.iteration = i;
 
-		if (result.time_taken < min_time || min_time == min_time.zero())
-			min_time = result.time_taken;
-		if (result.time_taken > max_time)
-			max_time = result.time_taken;
-
-		if (g_options.verbosity_level >= 1)
-			cout << "Time taken: ";
-
-		if (g_options.verbosity_level >= 0)
-			cout << chrono::duration_cast<chrono::seconds>(total_time).count() << ":"
-				<< chrono::duration_cast<chrono::milliseconds>(total_time).count() % 1000 << endl << endl;
+		for (auto step : pipeline)
+			step(data);
 	}
 
-	if (g_options.test)
-	{
-		cout << "Integrity : " << setw(number_width(g_options.iterations)) << integrity << "/" << g_options.iterations << endl;
-		cout << "Sorted    : " << setw(number_width(g_options.iterations)) << sorted << "/" << g_options.iterations << endl;
-	}
+	// presenting the report according to the set output tipe
+	if (opts.output == "hs")
+		output::human_sparse_report(data);
+	else if (opts.output == "hv")
+		output::human_verbose_report(data);
 
-	cout << "Min time     : " << th::to_string(min_time) << " | ";
-	print_time(min_time);
-	cout << "Max time     : " << th::to_string(max_time) << " | ";
-	print_time(max_time);
-	cout << "Average time : " << th::to_string(total_time / g_options.iterations) << " | ";
-	print_time(total_time / g_options.iterations);
-	cout << "Total time   : " << th::to_string(total_time) << " | ";
-	print_time(total_time);
-}
-
-void print_time(std::chrono::duration<std::chrono::high_resolution_clock::rep, std::chrono::high_resolution_clock::period> time)
-{
-	cout << setw(3) << chrono::duration_cast<chrono::seconds>(time).count() << ":"
-		<< setw(3) << chrono::duration_cast<chrono::milliseconds>(time).count() % 1000 << ":"
-		<< setw(3) << chrono::duration_cast<chrono::microseconds>(time).count() % 1000 << endl;
+	// clearing data
+	delete[] data.unsorted_array;
+	delete[] data.sorted_array;
 }

@@ -38,7 +38,12 @@ namespace time_helper
 		return chrono::duration_cast<chrono::nanoseconds>(dur).count() % 1000;
 	}
 
-	string to_string(const duration& dur)
+	long long get_nanoseconds_total(const duration& dur)
+	{
+		return chrono::duration_cast<chrono::nanoseconds>(dur).count();
+	}
+
+	string to_string(const duration& dur, bool microseconds)
 	{
 		// TODO: change to thread_local when migrate to Clang
 		static stringstream ss;
@@ -47,6 +52,7 @@ namespace time_helper
 		int minutes = get_minutes(dur);
 		long long seconds = get_seconds(dur);
 		long long milliseconds = get_milliseconds(dur);
+		long long microsec = get_microseconds(dur);
 
 		ss.str("");
 		ss.clear();
@@ -57,8 +63,10 @@ namespace time_helper
 			ss << setfill('0') << setw(2) << minutes << "m ";
 		if (seconds != 0 || minutes != 0 || hours != 0)
 			ss << setfill('0') << setw(2) << seconds << "s ";
-
-		ss << setfill('0') << setw(3) << milliseconds << "ms";
+		if (!microseconds || milliseconds != 0 || minutes != 0 || hours != 0)
+			ss << setfill('0') << setw(3) << milliseconds << "ms ";
+		if (microseconds)
+			ss << setfill('0') << setw(3) << microsec << "mcs";
 
 		return ss.str();
 	}
