@@ -15,6 +15,10 @@ struct pipeline_data
 	// size of the both memory blocks
 	unsigned int array_size;
 
+	// min and max digits that array can contain
+	int min_number;
+	int max_number;
+
 	// time taken by this step, only benchmark itself contributes to it
 	duration time_taken;
 	
