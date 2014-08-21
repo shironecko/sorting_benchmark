@@ -62,5 +62,8 @@
     <ClCompile Include="..\source\benchmarking\statistics.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\benchmarking\options.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

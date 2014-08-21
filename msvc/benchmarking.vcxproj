@@ -97,6 +97,7 @@
     <ClCompile Include="..\source\benchmarking\benchmark.cpp" />
     <ClCompile Include="..\source\benchmarking\main.cpp" />
     <ClCompile Include="..\source\benchmarking\array_prepare.cpp" />
+    <ClCompile Include="..\source\benchmarking\options.cpp" />
     <ClCompile Include="..\source\benchmarking\sorting.c" />
     <ClCompile Include="..\source\benchmarking\statistics.cpp" />
     <ClCompile Include="..\source\benchmarking\test.cpp" />

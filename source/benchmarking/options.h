@@ -14,4 +14,6 @@ struct options
 	bool test;
 };
 
+options initialize_options(int argc, char* argv[]);
+
 #endif
