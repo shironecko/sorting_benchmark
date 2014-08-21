@@ -4,7 +4,13 @@
 
 void prepare_array(pipeline_data& data)
 {
-	srand((unsigned int)time(nullptr));
+	static bool seeded = false;
+
+	if (!seeded)
+	{
+		seeded = true;
+		srand((unsigned int)time(nullptr));
+	}
 
 	for (unsigned int i = 0; i < data.array_size; i++)
 		data.unsorted_array[i] = rand() % (data.max_number + 1 - data.min_number) + data.min_number;
