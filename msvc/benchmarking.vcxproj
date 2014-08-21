@@ -89,6 +89,7 @@
     <ClInclude Include="..\source\benchmarking\options.h" />
     <ClInclude Include="..\source\benchmarking\pipeline_data.h" />
     <ClInclude Include="..\source\benchmarking\sorting.h" />
+    <ClInclude Include="..\source\benchmarking\statistics.h" />
     <ClInclude Include="..\source\benchmarking\test.h" />
     <ClInclude Include="..\source\benchmarking\time_helper.h" />
   </ItemGroup>
@@ -97,6 +98,7 @@
     <ClCompile Include="..\source\benchmarking\main.cpp" />
     <ClCompile Include="..\source\benchmarking\array_prepare.cpp" />
     <ClCompile Include="..\source\benchmarking\sorting.c" />
+    <ClCompile Include="..\source\benchmarking\statistics.cpp" />
     <ClCompile Include="..\source\benchmarking\test.cpp" />
     <ClCompile Include="..\source\benchmarking\time_helper.cpp" />
   </ItemGroup>
