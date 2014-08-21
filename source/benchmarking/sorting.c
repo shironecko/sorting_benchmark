@@ -1,11 +1,11 @@
 #include <stdbool.h>
 #include "sorting.h"
 
-void swap(int* arr, int a, int b)
+void swap(int* arr, unsigned int ai, unsigned int bi)
 {
-	int temp = arr[a];
-	arr[a] = arr[b];
-	arr[b] = temp;
+	int temp = arr[ai];
+	arr[ai] = arr[bi];
+	arr[bi] = temp;
 }
 
 void bubble_sort(int *arr, unsigned int len)
