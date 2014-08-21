@@ -1,4 +1,6 @@
+#include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 #include "sorting.h"
 
 void swap(int* arr, unsigned int ai, unsigned int bi)
@@ -118,4 +120,31 @@ int* merge_sort(int *up, int *down, unsigned int left, unsigned int right)
 	}
 
 	return target;
+}
+
+void count_sort(int *arr, unsigned int len, int min_num, int max_num)
+{
+	unsigned int arr_size = sizeof(int) * len;
+	int* copy = malloc(arr_size);
+	memcpy(copy, arr, arr_size);
+
+	unsigned int pos_size = sizeof(int) * (max_num - min_num);
+	int* positions = malloc(pos_size);
+	memset(positions, 0, pos_size);
+
+	// just for a moment positions array will store count of distinct number in the array
+	for (unsigned int i = 0; i < len; i++)
+		++positions[copy[i]];
+
+	// now well calculate actual positions of the elements
+	for (unsigned int i = 1; i < pos_size; i++)
+		positions[i] += positions[i - 1] + min_num;
+
+	for (unsigned int i = 0; i < len; i++)
+	{
+		unsigned int position = positions[copy[i]]++;
+		arr[position] = copy[i];
+	}
+
+	free(copy);
 }
