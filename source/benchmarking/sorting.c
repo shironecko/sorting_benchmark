@@ -46,6 +46,22 @@ void insertion_sort(int *arr, unsigned int len)
 	}
 }
 
+void selection_sort(int *arr, unsigned int len)
+{
+	for (unsigned int i = 0; i < len - 1; i++)
+	{
+		int min = i;
+
+		for (unsigned int j = i + 1; j < len; j++)
+		{
+			if (arr[j] < arr[min])
+				min = j;
+		}
+
+		swap(arr, i, min);
+	}
+}
+
 /*
  * Sorts an array using recursive merge sort with no additional memory allocations
  * up - pointer to array to sort
