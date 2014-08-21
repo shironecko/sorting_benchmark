@@ -8,9 +8,11 @@
 
 #include "options.h"
 #include "benchmark.h"
+#include "time_helper.h"
 
 namespace opt = boost::program_options;
 namespace chrono = std::chrono;
+namespace th = time_helper;
 using std::cout;
 using std::cerr;
 using std::endl;
@@ -90,13 +92,13 @@ int main(int argc, char* argv[])
 		cout << "Sorted    : " << setw(number_width(g_options.iterations)) << sorted << "/" << g_options.iterations << endl;
 	}
 
-	cout << "Min time     : ";
+	cout << "Min time     : " << th::to_string(min_time) << " | ";
 	print_time(min_time);
-	cout << "Max time     : ";
+	cout << "Max time     : " << th::to_string(max_time) << " | ";
 	print_time(max_time);
-	cout << "Average time : ";
+	cout << "Average time : " << th::to_string(total_time / g_options.iterations) << " | ";
 	print_time(total_time / g_options.iterations);
-	cout << "Total time   : ";
+	cout << "Total time   : " << th::to_string(total_time) << " | ";
 	print_time(total_time);
 }
 
