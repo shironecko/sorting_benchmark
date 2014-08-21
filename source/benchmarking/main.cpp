@@ -11,6 +11,7 @@
 #include "pipeline_data.h"
 #include "array_prepare.h"
 #include "benchmark.h"
+#include "statistics.h"
 #include "test.h"
 
 using namespace std;
@@ -63,6 +64,7 @@ int main(int argc, char* argv[])
 	vector<void(*)(pipeline_data& data)> pipeline;
 	pipeline.push_back(prepare_array);
 	pipeline.push_back(benchmark);
+	pipeline.push_back(aggregate_statistics);
 
 	if (g_options.test)
 		pipeline.push_back(test);
@@ -75,22 +77,16 @@ int main(int argc, char* argv[])
 	data.min_number = g_options.arr_min_num;
 	data.max_number = g_options.arr_max_num;
 
-	// misc statistical vars
-	duration total_time, min_time, max_time;
+	// misc testing statistical vars
 	unsigned int integrity = 0, sorted = 0;
 
 	// the pipeline itself
 	for (unsigned int i = 0; i < g_options.iterations; i++)
 	{
+		cout << "\r" << int((double)i / (double)g_options.iterations * 100.0) << "%...";
+
 		for (auto step : pipeline)
 			step(data);
-
-		total_time += data.time_taken;
-
-		if (data.time_taken < min_time || min_time == min_time.zero())
-			min_time = data.time_taken;
-		if (data.time_taken > max_time)
-			max_time = data.time_taken;
 
 		if (data.test_integrity) integrity++;
 		if (data.test_sorted) sorted++;
@@ -106,14 +102,16 @@ int main(int argc, char* argv[])
 	delete[] data.unsorted_array;
 	delete[] data.sorted_array;
 
+	cout << "\r100%..." << endl << endl;
+
 	if (g_options.test)
 	{
 		cout << "Integrity : " << integrity << "/" << g_options.iterations << endl;
 		cout << "Sorted    : " << sorted << "/" << g_options.iterations << endl;
 	}
 
-	cout << "Min time     : " << to_string(min_time) << endl;
-	cout << "Max time     : " << to_string(max_time) << endl;
-	cout << "Average time : " << to_string(total_time / g_options.iterations) << endl;
-	cout << "Total time   : " << to_string(total_time) << endl;
+	cout << "Min time     : " << to_string(get_min_duration()) << endl;
+	cout << "Max time     : " << to_string(get_max_duration()) << endl;
+	cout << "Average time : " << to_string(get_avg_duration()) << endl;
+	cout << "Total time   : " << to_string(get_total_duration()) << endl;
 }
