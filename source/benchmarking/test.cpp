@@ -1,6 +1,12 @@
 #include <unordered_map>
 #include "test.h"
 
+void test(pipeline_data& data)
+{
+	data.test_integrity = integrity_test(data.unsorted_array, data.sorted_array, data.array_size);
+	data.test_sorted = sort_test(data.sorted_array, data.array_size);
+}
+
 bool integrity_test(int *unsorted, int *sorted, unsigned int len)
 {
 	std::unordered_map<unsigned int, int> counts;
@@ -10,7 +16,7 @@ bool integrity_test(int *unsorted, int *sorted, unsigned int len)
 		counts[sorted[i]]--;
 	}
 
-	for each (auto count in counts)
+	for (auto count: counts)
 	{
 		if (count.second != 0)
 			return false;

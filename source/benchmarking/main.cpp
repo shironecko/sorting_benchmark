@@ -11,6 +11,7 @@
 #include "pipeline_data.h"
 #include "array_prepare.h"
 #include "benchmark.h"
+#include "test.h"
 
 using namespace std;
 using namespace time_helper;
@@ -63,6 +64,9 @@ int main(int argc, char* argv[])
 	pipeline.push_back(prepare_array);
 	pipeline.push_back(benchmark);
 
+	if (g_options.test)
+		pipeline.push_back(test);
+
 	// prepairing pipeline data
 	pipeline_data data{};
 	data.array_size = g_options.array_size;
@@ -82,13 +86,14 @@ int main(int argc, char* argv[])
 			step(data);
 
 		total_time += data.time_taken;
-		if (data.test_integrity) integrity++;
-		if (data.test_sorted) sorted++;
 
 		if (data.time_taken < min_time || min_time == min_time.zero())
 			min_time = data.time_taken;
 		if (data.time_taken > max_time)
 			max_time = data.time_taken;
+
+		if (data.test_integrity) integrity++;
+		if (data.test_sorted) sorted++;
 
 		if (g_options.verbosity_level >= 2)
 			cout << "Time taken: ";
