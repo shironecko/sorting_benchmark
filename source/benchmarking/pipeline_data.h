@@ -15,6 +15,11 @@ struct pipeline_data
 	// size of the both memory blocks
 	unsigned int array_size;
 
+	// total number of iterations
+	unsigned int iterations;
+	// number of the current iteration
+	unsigned int iteration;
+
 	// min and max digits that array can contain
 	int min_number;
 	int max_number;
@@ -23,8 +28,12 @@ struct pipeline_data
 	duration time_taken;
 	
 	// these are the indicators of the respective test passage
+	bool test;
 	bool test_sorted;
 	bool test_integrity;
+
+	unsigned int test_sorted_passed;
+	unsigned int test_integrity_passed;
 };
 
 

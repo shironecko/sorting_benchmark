@@ -10,7 +10,7 @@ struct options
 	unsigned int array_size;
 	int arr_min_num;
 	int arr_max_num;
-	int verbosity_level;
+	std::string output;
 	bool test;
 };
 

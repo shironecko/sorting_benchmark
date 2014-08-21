@@ -3,8 +3,17 @@
 
 void test(pipeline_data& data)
 {
-	data.test_integrity = integrity_test(data.unsorted_array, data.sorted_array, data.array_size);
-	data.test_sorted = sort_test(data.sorted_array, data.array_size);
+	if (integrity_test(data.unsorted_array, data.sorted_array, data.array_size))
+	{
+		data.test_integrity = true;
+		data.test_integrity_passed++;
+	}
+
+	if (sort_test(data.sorted_array, data.array_size))
+	{
+		data.test_sorted = true;
+		data.test_sorted_passed++;
+	}
 }
 
 bool integrity_test(int *unsorted, int *sorted, unsigned int len)
