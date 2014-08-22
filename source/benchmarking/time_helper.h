@@ -19,7 +19,7 @@ namespace time_helper
 	long long get_nanoseconds(const duration& dur);
 	long long get_nanoseconds_total(const duration& dur);
 
-	string to_string(const duration& dur, bool nanoseconds = false);
+	string to_string(const duration& dur, bool microseconds = false, bool nanoseconds = false);
 	time_point now();
 }
 

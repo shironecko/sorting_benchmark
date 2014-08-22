@@ -57,9 +57,9 @@ namespace benchmark_output
 			cout << "Sorted       : " << data.test_sorted_passed << "/" << get_iterations() << endl;
 		}
 
-		cout << "Min time     : " << to_string(get_min_duration(), true) << endl;
-		cout << "Max time     : " << to_string(get_max_duration(), true) << endl;
-		cout << "Average time : " << to_string(get_avg_duration(), true) << endl;
+		cout << "Min time     : " << to_string(get_min_duration(), true, true) << endl;
+		cout << "Max time     : " << to_string(get_max_duration(), true, true) << endl;
+		cout << "Average time : " << to_string(get_avg_duration(), true, true) << endl;
 		cout << "Total time   : " << to_string(get_total_duration()) << endl;
 	}
 
@@ -74,7 +74,7 @@ namespace benchmark_output
 			cout << "Integrity  : " << (data.test_integrity ? "OK" : "FAIL") << endl;
 			cout << "Sorted     : " << (data.test_sorted ? "OK" : "FAIL") << endl;
 		}
-		cout << "Time taken : " << to_string(data.time_taken, true) << endl << endl;
+		cout << "Time taken : " << to_string(data.time_taken, true, true) << endl << endl;
 	}
 
 	void human_verbose_greetings(const options& opts)
