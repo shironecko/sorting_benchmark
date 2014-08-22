@@ -53,3 +53,12 @@ void benchmark_merge(pipeline_data& data)
 
 	delete[] additional_buff;
 }
+
+void benchmark_count(pipeline_data& data)
+{
+	time_point start = now();
+
+	count_sort(data.unsorted_array, data.sorted_array, data.array_size, data.min_number, data.max_number);
+
+	data.time_taken = now() - start;
+}

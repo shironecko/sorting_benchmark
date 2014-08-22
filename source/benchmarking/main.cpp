@@ -30,6 +30,7 @@ int main(int argc, char* argv[])
 	benchmark_map["insertion"] = benchmark_insertion;
 	benchmark_map["selection"] = benchmark_selection;
 	benchmark_map["merge"] = benchmark_merge;
+	benchmark_map["count"] = benchmark_count;
 
 	// checking if the user specified a valid algorithm for benchmarking
 	auto benchmark = benchmark_map[opts.algorithm];

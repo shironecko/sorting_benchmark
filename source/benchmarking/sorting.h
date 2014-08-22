@@ -12,6 +12,6 @@ void selection_sort(int *arr, unsigned int len);
 int* merge_sort(int *up, int *down, unsigned int left, unsigned int right);
 
 // O(n)
-void count_sort(int *arr, unsigned int len, int min_num, int max_num);
+void count_sort(int* arr, int* buff, unsigned int len, int min_num, int max_num);
 
 #endif

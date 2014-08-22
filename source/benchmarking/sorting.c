@@ -122,29 +122,25 @@ int* merge_sort(int *up, int *down, unsigned int left, unsigned int right)
 	return target;
 }
 
-void count_sort(int *arr, unsigned int len, int min_num, int max_num)
+void count_sort(int* arr, int* buff, unsigned int len, int min_num, int max_num)
 {
-	unsigned int arr_size = sizeof(int) * len;
-	int* copy = malloc(arr_size);
-	memcpy(copy, arr, arr_size);
+	unsigned int cnt_size = max_num - min_num + 1;
+	int* count = malloc(cnt_size * sizeof(int));
+	memset(count, 0, cnt_size * sizeof(int));
 
-	unsigned int pos_size = sizeof(int) * (max_num - min_num);
-	int* positions = malloc(pos_size);
-	memset(positions, 0, pos_size);
-
-	// just for a moment positions array will store count of distinct number in the array
+	// lets calculate number of appearances of each number
 	for (unsigned int i = 0; i < len; i++)
-		++positions[copy[i]];
-
+		count[arr[i] - min_num]++;
+	
 	// now well calculate actual positions of the elements
-	for (unsigned int i = 1; i < pos_size; i++)
-		positions[i] += positions[i - 1] + min_num;
-
+	for (unsigned int i = 1; i < cnt_size; i++)
+		count[i] += count[i - 1];
+	
 	for (unsigned int i = 0; i < len; i++)
 	{
-		unsigned int position = positions[copy[i]]++;
-		arr[position] = copy[i];
+		unsigned int position = --(count[arr[i] - min_num]);
+		buff[position] = arr[i];
 	}
-
-	free(copy);
+	
+	free(count);
 }
