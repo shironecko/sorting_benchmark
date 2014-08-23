@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <cstring>
 #include <ctime>
 #include "array_prepare.h"
 
