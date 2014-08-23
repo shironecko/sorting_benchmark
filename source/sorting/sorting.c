@@ -91,7 +91,7 @@ int* merge_sort(int *up, int *down, unsigned int left, unsigned int right)
 	// merge
 	int *target = l_buff == up ? down : up;
 
-	unsigned int width = right - left, l_cur = left, r_cur = middle + 1;
+	unsigned int l_cur = left, r_cur = middle + 1;
 	for (unsigned int i = left; i <= right; i++)
 	{
 		if (l_cur <= middle && r_cur <= right)

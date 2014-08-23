@@ -68,7 +68,7 @@ int main(int argc, char* argv[])
 		exit(2);
 	}
 
-	// prepairing pipeline data
+	// preparing pipeline data
 	pipeline_data data{};
 	data.array_size = opts.array_size;
 	data.unsorted_array = new int[data.array_size];
@@ -77,9 +77,6 @@ int main(int argc, char* argv[])
 	data.min_number = opts.arr_min_num;
 	data.max_number = opts.arr_max_num;
 	data.test = opts.test;
-
-	// misc testing statistical vars
-	unsigned int integrity = 0, sorted = 0;
 
 	// the pipeline itself
 	for (unsigned int i = 0; i < opts.iterations; i++)
