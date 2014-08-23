@@ -15,5 +15,5 @@ Benchmarking sorting algorithms just for fun.
 * [x] Insertion
 * [x] Selection
 * [x] Merging
-* [ ] Counting
+* [x] Counting
 * [ ] Radix
