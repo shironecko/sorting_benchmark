@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
 #include "sorting.h"
@@ -125,7 +124,7 @@ int* merge_sort(int *up, int *down, unsigned int left, unsigned int right)
 void count_sort(int* arr, int* buff, unsigned int len, int min_num, int max_num)
 {
 	unsigned int cnt_size = max_num - min_num + 1;
-	int* count = malloc(cnt_size * sizeof(int));
+    int count[cnt_size];
 	memset(count, 0, cnt_size * sizeof(int));
 
 	// lets calculate number of appearances of each number
@@ -141,6 +140,4 @@ void count_sort(int* arr, int* buff, unsigned int len, int min_num, int max_num)
 		unsigned int position = --(count[arr[i] - min_num]);
 		buff[position] = arr[i];
 	}
-	
-	free(count);
 }
