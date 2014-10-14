@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
 	else
 	{
 		cout << "Unknown output mode: " << opts.output << endl;
-		exit(2);
+        return 2;
 	}
 
 	// preparing pipeline data
